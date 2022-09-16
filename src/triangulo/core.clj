@@ -14,48 +14,69 @@
 (defn calc-angulo
   "TODO: Calcula o ângulo ∠A, dado A B C."
   [a b c]
-  )
+  (math/to-degrees (math/acos (/ (- (* a a) (* b b) (* c c)) (* -2 b c)))))
 
 (defn calc-area
   "TODO: Calcula a área de um triângulo usando a formula de Heron."
   [a b c]
-  )
+  (let [semp (/ (calc-perimetro a b c) 2)]
+    (-> semp
+      (* (- semp a))
+      (* (- semp b))
+      (* (- semp c))
+      (math/sqrt))))
 
 (defn calc-altura
   "TODO: Calcula altura de A, dado a AREA."
   [a area]
-  )
+  (/ (* 2 area) a))
 
 (defn equilateral?
   "TODO: Verifica se o triangulo é equilateral"
   [a b c]
-  )
+  (= a b c))
 
 (defn isosceles?
   "TODO: Verifica se pelo menos dois lados sao iguais."
   [a b c]
-  )
+  (or (= a b) (= a c) (= b c)))
 
 (defn escaleno?
   "TODO: Verifica se os lados dos triangulos sao diferentes entre si."
   [a b c]
-  )
+  (not (= a b c)))
+
+(defn more-than-90?
+  [angle]
+  (> angle 90))
+
+(defn less-than-90?
+  [angle]
+  (< angle 90))
+
+(defn equal-to-90?
+  [angle]
+  (= angle 90))
+
+(def bool-some? (comp boolean some))
+
+(def calc-round (comp math/round calc-angulo))
 
 (defn retangulo?
   "TODO: Verifica se é um triangulo retangulo, cujos angulos são iguais a 90o.
   O resultado não é exato, dado que cada angulo é arredondado utilizando clojure.math/round."
   [a b c]
-  )
+  (bool-some? equal-to-90? [(calc-round a b c) (calc-round b a c) (calc-round c a b)]))
 
 (defn obtuso?
   "TODO: Verifica se o triangulo é obtuso, tendo algum angulo >90o."
   [a b c]
-  )
+  (bool-some? more-than-90? [(calc-round a b c) (calc-round b a c) (calc-round c a b)]))
 
 (defn agudo?
   "TODO: Verifica se o triangulo é obtuso, tendo algum angulo >90o."
   [a b c]
-  )
+  (every? less-than-90? [(calc-round a b c) (calc-round b a c) (calc-round c a b)]))
 
 (defn gerar-dados-completos
   [a b c]
